@@ -60,6 +60,9 @@ dependencies {
 
     implementation(libs.androidx.adaptive)
     implementation(libs.androidx.adaptive.layout)
+
+    implementation(libs.androidx.xr.compose)
+
     // api because we need to access LocalNavAnimatedScope in feature modules for animations.
     api(libs.androidx.navigation3.ui)
     debugImplementation(libs.ui.tooling)

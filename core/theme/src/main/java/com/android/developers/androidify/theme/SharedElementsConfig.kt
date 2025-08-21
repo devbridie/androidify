@@ -64,6 +64,7 @@ import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.circle
 import androidx.graphics.shapes.rectangle
 import androidx.navigation3.ui.LocalNavAnimatedContentScope
+import androidx.xr.compose.platform.LocalSpatialCapabilities
 import kotlin.math.max
 
 sealed interface SharedElementKey {
@@ -110,6 +111,7 @@ fun Modifier.sharedBoundsReveal(
     clipShape: Shape = MaterialTheme.shapes.large,
     renderInOverlayDuringTransition: Boolean = true,
 ): Modifier {
+    if (LocalSpatialCapabilities.current.isSpatialUiEnabled) return this
     with(sharedTransitionScope) {
         return this@sharedBoundsReveal
             .sharedBoundsWithDefaults(
@@ -136,6 +138,7 @@ fun Modifier.sharedBoundsWithDefaults(
     clipShape: Shape = MaterialTheme.shapes.large,
     renderInOverlayDuringTransition: Boolean = true,
 ): Modifier {
+    if (LocalSpatialCapabilities.current.isSpatialUiEnabled) return this
     with(sharedTransitionScope) {
         return this@sharedBoundsWithDefaults
             .sharedBounds(
@@ -189,6 +192,7 @@ fun Modifier.sharedBoundsRevealWithShapeMorph(
     },
     keepChildrenSizePlacement: Boolean = true,
 ): Modifier {
+    if (LocalSpatialCapabilities.current.isSpatialUiEnabled) return this
     with(sharedTransitionScope) {
         val animatedProgress =
             animatedVisibilityScope.transition.animateFloat(targetValueByState = targetValueByState)
