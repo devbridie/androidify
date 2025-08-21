@@ -78,6 +78,24 @@ fun SquiggleBackground(
     }
 }
 
+/* Squiggle without padding. */
+@Composable
+fun FullSquiggleBackground(modifier: Modifier = Modifier) {
+    val vectorBackground =
+        rememberVectorPainter(ImageVector.vectorResource(R.drawable.squiggle_full))
+    Box(
+        modifier.fillMaxSize(),
+    ) {
+        Image(
+            painter = vectorBackground,
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.Center),
+            contentScale = ContentScale.Fit,
+        )
+    }
+}
+
 @LargeScreensPreview
 @Composable
 private fun SquiggleBackgroundLargePreview() {

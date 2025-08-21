@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -103,6 +104,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_TEXTURE_VIEW
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
+import androidx.xr.compose.platform.LocalSession
+import androidx.xr.compose.platform.LocalSpatialCapabilities
+import androidx.xr.scenecore.scene
 import coil3.compose.AsyncImage
 import com.android.developers.androidify.theme.Blue
 import com.android.developers.androidify.theme.SharedElementContextPreview
@@ -113,6 +117,8 @@ import com.android.developers.androidify.util.LargeScreensPreview
 import com.android.developers.androidify.util.LocalOcclusion
 import com.android.developers.androidify.util.PhonePreview
 import com.android.developers.androidify.util.isAtLeastMedium
+import com.android.developers.androidify.xr.FullSpaceIcon
+import com.android.developers.androidify.xr.couldRequestFullSpace
 import com.android.developers.androidify.theme.R as ThemeR
 
 @ExperimentalMaterial3ExpressiveApi
@@ -125,9 +131,17 @@ fun HomeScreen(
     onAboutClicked: () -> Unit = {},
 ) {
     val state = homeScreenViewModel.state.collectAsStateWithLifecycle()
+    val isXr = LocalSpatialCapabilities.current.isSpatialUiEnabled
 
     if (!state.value.isAppActive) {
         AppInactiveScreen()
+    } else if (isXr) {
+        HomeScreenContentsXr(
+            state.value.videoLink,
+            state.value.dancingDroidLink,
+            onClickLetsGo,
+            onAboutClicked,
+        )
     } else {
         HomeScreenContents(
             state.value.videoLink,
@@ -182,19 +196,32 @@ fun HomeScreenContents(
                             .align(Alignment.CenterVertically),
                     ) {
                         MainHomeContent(dancingBotLink)
-                        HomePageButton(
+                        Row(
                             modifier = Modifier
-                                .onLayoutRectChanged {
-                                    positionButtonClick = it.boundsInWindow.center
-                                }
                                 .align(Alignment.BottomCenter)
                                 .padding(bottom = 16.dp)
                                 .height(64.dp)
-                                .width(220.dp),
-                            onClick = {
-                                onClickLetsGo(positionButtonClick)
-                            },
-                        )
+                        ) {
+                            if (LocalSpatialCapabilities.current.couldRequestFullSpace()) {
+                                val session = LocalSession.current
+                                LargeToFullSpaceButton(modifier = Modifier
+                                    .fillMaxHeight()) {
+                                    session?.scene?.requestFullSpaceMode()
+                                }
+                                Spacer(Modifier.size(16.dp))
+                            }
+                            HomePageButton(
+                                modifier = Modifier
+                                    .onLayoutRectChanged {
+                                        positionButtonClick = it.boundsInWindow.center
+                                    }
+                                    .width(220.dp)
+                                    .fillMaxHeight(),
+                                onClick = {
+                                    onClickLetsGo(positionButtonClick)
+                                },
+                            )
+                        }
                     }
                 }
             } else {
@@ -359,7 +386,7 @@ private fun HomeScreenLargeScreensPreview() {
 }
 
 @Composable
-private fun MainHomeContent(
+fun MainHomeContent(
     dancingBotLink: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -430,7 +457,7 @@ private fun ColumnScope.DecorativeSquiggleLimeGreen() {
 
 @Preview
 @Composable
-private fun HomePageButton(
+fun HomePageButton(
     modifier: Modifier = Modifier,
     colors: ButtonColors = ButtonDefaults.buttonColors().copy(containerColor = Blue),
     onClick: () -> Unit = {},
@@ -449,6 +476,31 @@ private fun HomePageButton(
             stringResource(R.string.home_button_label),
             style = style,
         )
+    }
+}
+
+@Composable
+fun LargeToFullSpaceButton(
+    modifier: Modifier = Modifier,
+    colors: ButtonColors = ButtonDefaults.buttonColors().copy(containerColor = Blue),
+    onClick: () -> Unit = {},
+) {
+    val style = MaterialTheme.typography.titleLarge.copy(
+        fontWeight = FontWeight(700),
+        letterSpacing = .15f.sp,
+    )
+
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+        colors = colors,
+    ) {
+        Text(
+            stringResource(R.string.view_in_xr_button_label),
+            style = style,
+        )
+        Spacer(Modifier.size(8.dp))
+        FullSpaceIcon()
     }
 }
 
@@ -525,7 +577,7 @@ private fun DancingBotHeadlineText(
 
 @OptIn(UnstableApi::class) // New Media3 Compose artifact is currently experimental
 @Composable
-private fun VideoPlayer(
+fun VideoPlayer(
     videoLink: String?,
     modifier: Modifier = Modifier,
 ) {
