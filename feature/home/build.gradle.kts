@@ -74,8 +74,6 @@ dependencies {
     implementation(libs.coil.compose.http)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
-    implementation(libs.androidx.media3.exoplayer)
-    implementation(libs.androidx.media3.ui.compose)
     implementation(libs.google.oss.licenses) {
         exclude(group = "androidx.appcompat")
     }

@@ -16,4 +16,6 @@
 -->
 <resources>
     <string name="androidify_title">Androidify</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
 </resources>
