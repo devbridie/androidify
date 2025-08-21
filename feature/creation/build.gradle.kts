@@ -73,11 +73,13 @@ dependencies {
 
     implementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.xr.compose)
 
     implementation(projects.core.theme)
     implementation(projects.core.util)
     implementation(projects.data)
     implementation(projects.feature.results)
+    implementation(projects.core.xr)
     testImplementation(libs.hilt.android.testing)
     testImplementation(libs.robolectric)
     testImplementation(projects.core.testing)

@@ -56,13 +56,14 @@ fun AndroidifyTopAppBar(
     modifier: Modifier = Modifier,
     titleText: String = stringResource(R.string.androidify_title),
     isMediumWindowSize: Boolean = false,
+    isXr: Boolean = false,
     backEnabled: Boolean = false,
     aboutEnabled: Boolean = true,
     expandedCenterButtons: @Composable () -> Unit = {},
     onBackPressed: () -> Unit = {},
     onAboutClicked: () -> Unit = {},
 ) {
-    if (isMediumWindowSize) {
+    if (isMediumWindowSize && !isXr) {
         Box(
             modifier = modifier
                 .fillMaxWidth()
@@ -105,6 +106,52 @@ fun AndroidifyTopAppBar(
                         ),
                     onAboutClicked = onAboutClicked,
                 )
+            }
+        }
+    } else if (isXr) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(start = 8.dp, end = 16.dp, top = 16.dp),
+        ) {
+            Row(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(64.dp)
+                    .padding(start = 8.dp)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                        shape = MaterialTheme.shapes.large,
+                    )
+                    .padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (backEnabled) {
+                    BackButton(onBackPressed)
+                } else {
+                    Spacer(modifier.size(16.dp))
+                }
+                AndroidifyTitle(titleText)
+
+                Box(
+                    Modifier.weight(1f),
+                ) {
+                    Box(Modifier.align(Alignment.Center)) {
+                        expandedCenterButtons()
+                    }
+                }
+
+                if (aboutEnabled) {
+                    AboutButton(
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                                shape = CircleShape,
+                            ),
+                        onAboutClicked = onAboutClicked,
+                    )
+                }
             }
         }
     } else {

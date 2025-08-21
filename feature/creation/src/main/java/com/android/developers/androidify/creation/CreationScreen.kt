@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.xr.compose.platform.LocalSpatialCapabilities
 import com.android.developers.androidify.customize.CustomizeAndExportScreen
 import com.android.developers.androidify.customize.CustomizeExportViewModel
 import com.android.developers.androidify.results.ResultsScreen
@@ -82,22 +83,41 @@ fun CreationScreen(
     val snackbarHostState by creationViewModel.snackbarHostState.collectAsStateWithLifecycle()
     when (uiState.screenState) {
         ScreenState.EDIT -> {
-            EditScreen(
-                snackbarHostState = snackbarHostState,
-                dropBehaviourFactory = creationViewModel.dropBehaviourFactory,
-                isExpanded = isMedium,
-                onCameraPressed = onCameraPressed,
-                onBackPressed = onBackPressed,
-                onAboutPressed = onAboutPressed,
-                uiState = uiState,
-                onChooseImageClicked = { pickMedia.launch(PickVisualMediaRequest(it)) },
-                onPromptOptionSelected = creationViewModel::onSelectedPromptOptionChanged,
-                onUndoPressed = creationViewModel::onUndoPressed,
-                onPromptGenerationPressed = creationViewModel::onPromptGenerationClicked,
-                onBotColorSelected = creationViewModel::onBotColorChanged,
-                onStartClicked = creationViewModel::startClicked,
-                onDropCallback = creationViewModel::onImageSelected,
-            )
+            if (LocalSpatialCapabilities.current.isSpatialUiEnabled) {
+                EditScreenXr(
+                    snackbarHostState = snackbarHostState,
+                    dropBehaviourFactory = creationViewModel.dropBehaviourFactory,
+                    isExpanded = isMedium,
+                    onCameraPressed = onCameraPressed,
+                    onBackPressed = onBackPressed,
+                    onAboutPressed = onAboutPressed,
+                    uiState = uiState,
+                    onChooseImageClicked = { pickMedia.launch(PickVisualMediaRequest(it)) },
+                    onPromptOptionSelected = creationViewModel::onSelectedPromptOptionChanged,
+                    onUndoPressed = creationViewModel::onUndoPressed,
+                    onPromptGenerationPressed = creationViewModel::onPromptGenerationClicked,
+                    onBotColorSelected = creationViewModel::onBotColorChanged,
+                    onStartClicked = creationViewModel::startClicked,
+                    onDropCallback = creationViewModel::onImageSelected,
+                )
+            } else {
+                EditScreen(
+                    snackbarHostState = snackbarHostState,
+                    dropBehaviourFactory = creationViewModel.dropBehaviourFactory,
+                    isExpanded = isMedium,
+                    onCameraPressed = onCameraPressed,
+                    onBackPressed = onBackPressed,
+                    onAboutPressed = onAboutPressed,
+                    uiState = uiState,
+                    onChooseImageClicked = { pickMedia.launch(PickVisualMediaRequest(it)) },
+                    onPromptOptionSelected = creationViewModel::onSelectedPromptOptionChanged,
+                    onUndoPressed = creationViewModel::onUndoPressed,
+                    onPromptGenerationPressed = creationViewModel::onPromptGenerationClicked,
+                    onBotColorSelected = creationViewModel::onBotColorChanged,
+                    onStartClicked = creationViewModel::startClicked,
+                    onDropCallback = creationViewModel::onImageSelected,
+                )
+            }
         }
 
         ScreenState.LOADING -> {

@@ -255,7 +255,7 @@ fun EditScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
-private fun MainCreationPane(
+fun MainCreationPane(
     uiState: CreationState,
     dropBehaviourFactory: DropBehaviourFactory,
     modifier: Modifier = Modifier,
@@ -395,7 +395,7 @@ private fun ColumnScope.BottomButtons(
 }
 
 @Composable
-private fun TransformButton(
+fun TransformButton(
     modifier: Modifier = Modifier,
     buttonText: String = stringResource(CreationR.string.transform_button),
     onClicked: () -> Unit = {},
