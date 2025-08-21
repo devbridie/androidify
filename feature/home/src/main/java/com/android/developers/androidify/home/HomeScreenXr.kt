@@ -49,6 +49,7 @@ import androidx.xr.compose.subspace.layout.resizable
 import androidx.xr.compose.subspace.layout.rotate
 import com.android.developers.androidify.theme.components.AndroidifyTopAppBar
 import com.android.developers.androidify.theme.components.FullSquiggleBackground
+import com.android.developers.androidify.xr.MainPanelWorkaround
 import com.android.developers.androidify.xr.RequestHomeSpaceIconButton
 
 @Composable
@@ -62,6 +63,7 @@ fun HomeScreenContentsXr(
         mutableStateOf(IntOffset.Zero)
     }
     ApplicationSubspace {
+        MainPanelWorkaround()
         SpatialPanel(
             SubspaceModifier
                 .movable()
